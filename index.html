@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Diseño e Implementación de un Patrón de Arquitectura para EDI 301 (Flutter + Node.js)</title>
+  <meta name="description" content="Selección, diseño e implementación de un patrón de arquitectura (Clean Architecture + MVVM/Provider) para EDI 301 (Flutter + Node.js)." />
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --card:#111826;
+      --text:#e6edf3;
+      --muted:#9fb0c0;
+      --accent:#6ee7ff;
+      --border:#223044;
+      --code:#0a0f16;
+      --link:#8ab4ff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:linear-gradient(180deg, var(--bg), #070a0f 60%);
+      color:var(--text);
+      line-height:1.6;
+    }
+    a{color:var(--link); text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{
+      padding:48px 18px 20px;
+      border-bottom:1px solid var(--border);
+      background: radial-gradient(1200px 400px at 20% 0%, rgba(110,231,255,.15), transparent 60%),
+                  radial-gradient(900px 350px at 80% 20%, rgba(138,180,255,.12), transparent 55%);
+    }
+    .wrap{max-width:980px; margin:0 auto}
+    .title{font-size:clamp(26px, 3.2vw, 44px); line-height:1.15; margin:0 0 10px}
+    .authors{color:var(--muted); margin:0 0 6px}
+    .affil{color:var(--muted); margin:0 0 18px}
+    .pillrow{display:flex; gap:10px; flex-wrap:wrap; margin:16px 0 0}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border:1px solid var(--border); border-radius:999px;
+      background:rgba(17,24,38,.65);
+      color:var(--muted); font-size:14px;
+    }
+    main{padding:26px 18px 60px}
+    section{
+      background:rgba(17,24,38,.55);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:20px 18px;
+      margin:16px 0;
+    }
+    h2{margin:0 0 10px; font-size:20px}
+    h3{margin:18px 0 8px; font-size:16px; color:#d7e3ee}
+    p{margin:10px 0}
+    ul{margin:10px 0 10px 22px}
+    .muted{color:var(--muted)}
+    .keywords{margin-top:10px}
+    .figure{
+      border:1px dashed rgba(159,176,192,.35);
+      border-radius:14px;
+      padding:14px;
+      background:rgba(10,15,22,.35);
+      margin:14px 0;
+    }
+    .figcap{margin-top:10px; color:var(--muted); font-size:14px}
+    .placeholder{
+      display:flex; align-items:center; justify-content:center;
+      border:1px solid rgba(34,48,68,.75);
+      border-radius:12px;
+      height:220px;
+      background:linear-gradient(135deg, rgba(110,231,255,.08), rgba(138,180,255,.06));
+      color:rgba(230,237,243,.75);
+      text-align:center;
+      padding:14px;
+    }
+    pre{
+      background:var(--code);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      overflow:auto;
+      margin:12px 0;
+    }
+    code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;}
+    footer{
+      padding:24px 18px 40px;
+      border-top:1px solid var(--border);
+      color:var(--muted);
+    }
+    .toc{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:8px;
+      margin:10px 0 0;
+    }
+    .toc a{
+      display:block;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:rgba(17,24,38,.45);
+    }
+    .toc a:hover{background:rgba(17,24,38,.75)}
+    .small{font-size:14px}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap">
+      <h1 class="title">Diseño e Implementación de un Patrón de Arquitectura para EDI 301 (Flutter + Node.js)</h1>
+      <p class="authors">Aldahir Emmanuel Ballina Nuñez, Emmanuel Chavez Ventura</p>
+      <p class="affil">Universidad Linda Vista</p>
+      <p class="muted">
+        <strong>Resumen.</strong>
+        Este documento describe la selección, diseño e implementación de un patrón de arquitectura para el proyecto EDI 301,
+        compuesto por una aplicación móvil en Flutter y un back-end en Node.js. Se adopta Clean Architecture, complementada con MVVM
+        y gestión de estado (Provider) en Flutter, para mejorar mantenibilidad, escalabilidad y separación de responsabilidades.
+      </p>
+      <p class="keywords muted"><strong>Keywords:</strong> Clean Architecture · Flutter · Node.js · MVVM · BLoC · Express</p>
+
+      <div class="pillrow">
+        <span class="pill">📄 Formato: HTML</span>
+        <span class="pill">🚀 Listo para GitHub Pages</span>
+        <span class="pill">🧱 Clean Architecture + MVVM/Provider</span>
+      </div>
+
+      <div class="toc" aria-label="Tabla de contenido">
+        <a href="#sec-1">1. Objetivo del proyecto</a>
+        <a href="#sec-2">2. Patrones de arquitectura</a>
+        <a href="#sec-3">3. Selección del patrón de arquitectura</a>
+        <a href="#sec-4">4. Diseño del patrón</a>
+        <a href="#sec-5">5. Implementación del patrón en el proyecto</a>
+        <a href="#sec-6">6. Ventajas y desventajas</a>
+        <a href="#sec-7">7. Conclusión</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+
+      <section id="sec-1">
+        <h2>1. Objetivo del proyecto</h2>
+        <p>
+          EDI 301 es una solución móvil en Flutter conectada a un back-end en Node.js para centralizar y digitalizar procesos del
+          programa EDI (gestión de usuarios, familias/grupos y funcionalidades relacionadas). El objetivo es mejorar el control de
+          la información, reducir tareas manuales y facilitar el acceso desde dispositivos móviles.
+        </p>
+      </section>
+
+      <section id="sec-2">
+        <h2>2. Patrones de arquitectura</h2>
+        <p>
+          En aplicaciones móviles y back-end se emplean patrones para separar responsabilidades y facilitar el crecimiento del
+          sistema. En móvil destacan MVC, MVVM y BLoC (manejo de estado), y arquitecturas por capas como Clean Architecture.
+          En back-end son comunes MVC y la arquitectura en capas (routes/controllers/services/repositories), así como variantes como
+          Clean/Hexagonal para aislar el dominio de frameworks y bases de datos.
+        </p>
+      </section>
+
+      <section id="sec-3">
+        <h2>3. Selección del patrón de arquitectura</h2>
+
+        <h3>3.1. Patrón elegido</h3>
+        <p>
+          Se selecciona Clean Architecture para Flutter y Node.js. En Flutter se integra con MVVM y gestión de estado (Provider).
+          En Node.js se implementa con Express organizado por capas (routes → controllers → use cases/services → repositories → data sources).
+        </p>
+
+        <h3>3.2. Justificación (según necesidades del proyecto)</h3>
+        <ul>
+          <li><strong>Naturaleza del proyecto:</strong> EDI 301 combina UI móvil + API + Base de Datos, por lo que requiere límites claros entre interfaz, reglas de negocio y datos.</li>
+          <li><strong>Complejidad:</strong> La UI es reactiva (cargas, errores, sesiones), y el back-end concentra reglas (roles, validaciones, consistencia).</li>
+          <li><strong>Mantenibilidad y escalabilidad:</strong> Clean Architecture permite crecer por módulos (usuarios, familias, agenda, etc.) con cambios localizados.</li>
+          <li><strong>Estado y lógica:</strong> MVVM+Provider evita lógica dentro de Widgets; en Node.js los controllers se mantienen delgados y la lógica vive en casos de uso/servicios.</li>
+        </ul>
+      </section>
+
+      <section id="sec-4">
+        <h2>4. Diseño del patrón</h2>
+
+        <h3>4.1. Componentes principales</h3>
+        <ul>
+          <li><strong>Presentación (Flutter):</strong> Widgets/Pantallas + capa de estado (ViewModel/BLoC/Provider).</li>
+          <li><strong>Dominio:</strong> Entidades, casos de uso y contratos (interfaces de repositorio).</li>
+          <li><strong>Datos:</strong> Implementaciones (API client, DTOs/mappers, repositorios concretos, almacenamiento local si aplica).</li>
+          <li><strong>API (Node.js):</strong> Routes/Controllers (capa delivery), Casos de uso/Services (aplicación), Domain (contratos/entidades), Infrastructure (SQL Server, filesystem, queries).</li>
+        </ul>
+
+        <h3>4.2. Relaciones e interacción entre componentes</h3>
+        <p>
+          Las dependencias apuntan hacia el dominio: la UI/API invoca casos de uso; los casos de uso dependen de interfaces;
+          y la infraestructura implementa dichas interfaces.
+        </p>
+
+        <h3>4.3. Manejo de lógica de negocio y estado</h3>
+        <p>
+          En Flutter, la UI sólo renderiza y dispara acciones. La capa de estado (Provider) transforma acciones en estados
+          (Loading/Success/Error) e invoca casos de uso. Los casos de uso concentran reglas del negocio y dependen de interfaces de
+          repositorio. En Node.js, los controllers reciben la petición, realizan validación básica y delegan a casos de uso/servicios;
+          la persistencia se implementa en repositorios de infraestructura (SQL Server, almacenamiento de imágenes) sin contaminar el
+          dominio.
+        </p>
+      </section>
+
+      <section id="sec-5">
+        <h2>5. Implementación del patrón en el proyecto</h2>
+
+        <h3>5.1. Flutter: organización del código</h3>
+        <p>Se propone organización por feature (módulos) y por capas internas:</p>
+
+        <div class="figure" role="group" aria-label="Figura 1">
+          <div class="placeholder">
+            <div>
+              <strong>Placeholder de la Figura 1</strong><br />
+              Coloca aquí tu imagen (por ejemplo: <code>assets/figura1.png</code> o <code>assets/figura1.svg</code>)<br />
+              y reemplaza este bloque por un <code>&lt;img&gt;</code>.
+            </div>
+          </div>
+          <div class="figcap"><strong>Figura 1.</strong> Estructura en capas (Clean Architecture) para Flutter y Node.js en EDI 301.</div>
+        </div>
+
+        <p class="muted small">Listing 1.1. Estructura sugerida en Flutter (EDI 301).</p>
+        <pre><code>lib/
+  src/
+    features/
+      usuarios/
+        presentation/
+          pages/
+          widgets/
+          state/   # Bloc/Cubit o Providers/Notifiers
+        domain/
+          entities/
+          usecases/
+          repositories/ # interfaces
+        data/
+          datasources/  # api client
+          models/       # DTOs
+          repositories/ # implementaciones
+      familias/
+      agenda/
+    core/
+      network/
+      errors/
+      utils/
+      di/</code></pre>
+
+        <p>
+          Integración MVVM/BLoC: las pantallas consumen un ViewModel/BLoC (inyectado vía BlocProvider). El ViewModel/BLoC ejecuta
+          casos de uso del dominio y publica estados para que la UI se actualice.
+        </p>
+
+        <div class="figure" role="group" aria-label="Figura 2">
+          <div class="placeholder">
+            <div>
+              <strong>Placeholder de la Figura 2</strong><br />
+              Coloca aquí tu diagrama de interacción (p.ej. <code>assets/figura2.svg</code>)<br />
+              y reemplaza este bloque por un <code>&lt;img&gt;</code>.
+            </div>
+          </div>
+          <div class="figcap"><strong>Figura 2.</strong> Interacción entre componentes en Clean Architecture para EDI 301.</div>
+        </div>
+
+        <h3>5.2. Node.js: estructura por capas con Express</h3>
+        <p>La API se organiza por capas y por módulos:</p>
+
+        <p class="muted small">Listing 1.2. Estructura sugerida en Node.js (Express) con Clean Architecture.</p>
+        <pre><code>src/
+  interfaces/
+    http/
+      routes/
+      controllers/
+      middlewares/
+  application/
+    usecases/
+    services/
+  domain/
+    entities/
+    repositories/  # interfaces
+    errors/
+  infrastructure/
+    db/
+      connection/
+      queries/
+      repositories/ # implementaciones
+    storage/        # uploads / imagenes
+  shared/
+    utils/
+    config/</code></pre>
+
+        <p>
+          Flujo: Route → Controller → Use Case/Service → Repository (interface) → Repository impl (SQL/Storage). Los controllers
+          permanecen delgados y la lógica del negocio se concentra en casos de uso/servicios.
+        </p>
+      </section>
+
+      <section id="sec-6">
+        <h2>6. Ventajas y desventajas</h2>
+
+        <h3>6.1. Ventajas</h3>
+        <ul>
+          <li><strong>Mantenibilidad:</strong> cambios en UI o endpoints no obligan a modificar reglas del negocio.</li>
+          <li><strong>Reutilización:</strong> casos de uso reutilizables entre pantallas y endpoints.</li>
+          <li><strong>Escalabilidad:</strong> crecimiento por módulos (usuarios, familias, agenda, etc.) con límites claros.</li>
+          <li><strong>Testabilidad:</strong> pruebas de casos de uso con mocks de repositorios sin depender de Flutter/Express/BD.</li>
+        </ul>
+
+        <h3>6.2. Desventajas y retos</h3>
+        <ul>
+          <li><strong>Complejidad inicial:</strong> más capas, interfaces y archivos.</li>
+          <li><strong>Curva de aprendizaje:</strong> requiere disciplina para no mezclar responsabilidades.</li>
+          <li><strong>Riesgo de sobre-ingeniería:</strong> demasiadas abstracciones si no se controla.</li>
+        </ul>
+      </section>
+
+      <section id="sec-7">
+        <h2>7. Conclusión</h2>
+        <p>
+          El uso de Clean Architecture en EDI 301, implementado con Flutter para el cliente móvil y Node.js (Express) para el back-end,
+          mejora la organización del proyecto al separar responsabilidades en capas: presentación, dominio y datos/infraestructura.
+          Esta separación reduce el acoplamiento entre la interfaz, la lógica de negocio y la persistencia, facilitando el mantenimiento
+          cuando se ajustan pantallas, endpoints o estructuras en la base de datos. Además, centralizar reglas en casos de uso incrementa
+          la reutilización y permite pruebas más directas, ya que la lógica crítica puede validarse sin depender de frameworks o servicios
+          externos. En futuras versiones, el patrón puede evolucionar agregando módulos (notificaciones, reportes, analítica, integración
+          con servicios externos) sin afectar el núcleo del dominio. También permite cambiar detalles de infraestructura, como el mecanismo
+          de almacenamiento de imágenes o la tecnología de acceso a datos, manteniendo estables los casos de uso. De esta manera, la
+          arquitectura seleccionada favorece la eficiencia del desarrollo y el crecimiento controlado del sistema conforme se amplíen los
+          requerimientos del programa EDI.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p class="small">
+        Documento convertido desde PDF a HTML para publicación en GitHub Pages.
+      </p>
+      <p class="small">
+        Fuente: “Diseño e Implementación de un Patrón de Arquitectura para EDI 301 (Flutter + Node.js)”. :contentReference[oaicite:1]{index=1}
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
